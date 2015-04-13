@@ -1,4 +1,5 @@
 #include <map>
+#include <ostream>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -12,6 +13,18 @@ using namespace testing;
 
 using namespace yamail::yextractor;
 using namespace yamail::yextractor::detail;
+
+template <class ... Values>
+std::ostream& operator <<(std::ostream &stream, const std::tuple<Values ...>& values) {
+    return stream << toString(values);
+}
+
+std::ostream& operator <<(std::ostream &stream, const Errors& errors) {
+    for (const auto& error : errors) {
+        stream << error << std::endl;
+    }
+    return stream;
+}
 
 using Source = std::map<std::string, std::string>;
 
