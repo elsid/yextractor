@@ -26,14 +26,6 @@ struct Parser<boost::optional<T>> {
 };
 
 template <>
-struct Parser<bool> {
-    Errors operator()(bool& dst, const std::string& src) const {
-        dst = src == "y";
-        return Errors();
-    }
-};
-
-template <>
 struct Parser<std::string> {
     Errors operator()(std::string& dst, const std::string& src) const {
         dst = src;

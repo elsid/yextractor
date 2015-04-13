@@ -42,7 +42,7 @@ DEFINE_PARAMETER(ParamA, std::string, "a")
 DEFINE_PARAMETER(ParamB, std::string, "b")
 DEFINE_PARAMETER_WITH_PARSER(ParamWithParser, std::string, "c", ParamParser)
 DEFINE_PARAMETER(ParamD, std::string, "d")
-DEFINE_PARAMETER(ParamE, bool, "e")
+DEFINE_PARAMETER(ParamE, std::string, "e")
 
 static_assert(
     std::is_same<
@@ -325,7 +325,7 @@ TEST(ExtractorTest, extract_complex_expression_should_succeed) {
     const auto real = extractor.get<Params>(source);
     const auto expected = std::make_tuple(ParamA("42"), ParamB("13"),
                                           ParamWithParser("prefix042"),
-                                          ParamD("str"), ParamE(true));
+                                          ParamD("str"), ParamE("y"));
     EXPECT_EQ(real, expected);
     EXPECT_TRUE(extractor.errors().empty());
 }
