@@ -22,9 +22,10 @@ struct Parameter {
     Parameter(const Value& value) : value(value) {}
     Parameter(Value&& value) : value(std::move(value)) {}
     template <class ... Values>
-    Parameter(const std::tuple<Values ...>& values) : value(detail::get<Parameter>(values)) {}
-    Parameter(const Parameter &other) = delete;
-    Parameter(Parameter &&other) = default;
+    Parameter(const std::tuple<Values ...>& values)
+            : value(detail::get<Parameter>(values)) {}
+    Parameter(const Parameter &) = delete;
+    Parameter(Parameter &&) = default;
 
     static std::string name() { return Tag::name; }
     const Type& get() const { return value.get(); }
