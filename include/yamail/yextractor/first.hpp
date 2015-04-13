@@ -1,6 +1,8 @@
 #ifndef YAMAIL_YEXTRACTOR_FIRST_HPP
 #define YAMAIL_YEXTRACTOR_FIRST_HPP
 
+#include <tuple>
+
 namespace yamail {
 namespace yextractor {
 

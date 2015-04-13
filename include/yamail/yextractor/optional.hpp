@@ -1,8 +1,6 @@
 #ifndef YMAIL_EXTRACTOR_OPTIONAL_HPP
 #define YMAIL_EXTRACTOR_OPTIONAL_HPP
 
-#include <boost/optional.hpp>
-
 #include <yamail/yextractor/parameter.hpp>
 
 namespace yamail {

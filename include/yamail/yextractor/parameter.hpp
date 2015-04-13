@@ -1,6 +1,8 @@
 #ifndef YAMAIL_YEXTRACTOR_PARAMETER_HPP
 #define YAMAIL_YEXTRACTOR_PARAMETER_HPP
 
+#include <boost/optional.hpp>
+
 #include <yamail/yextractor/detail/get.hpp>
 #include <yamail/yextractor/detail/parser.hpp>
 

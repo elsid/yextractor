@@ -1,8 +1,6 @@
 #ifndef YAMAIL_YEXTRACTOR_DETAIL_FLAT_HPP
 #define YAMAIL_YEXTRACTOR_DETAIL_FLAT_HPP
 
-#include <tuple>
-
 #include <yamail/yextractor/any.hpp>
 #include <yamail/yextractor/every.hpp>
 #include <yamail/yextractor/first.hpp>
