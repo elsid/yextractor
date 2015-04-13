@@ -32,9 +32,11 @@ DEFINE_PARAMETER_WITH_PARSER(имя_типа, тип_значения, "ключ
 
 ```
 struct Parser {
-    yamail::yextractor::Errors operator ()(std::string& dst, const std::string& src) const;
+    yamail::yextractor::Errors operator ()(T& dst, const std::string& src) const;
 };
 ```
+
+```T``` - тип значения параметра
 
 Пример:
 ```
