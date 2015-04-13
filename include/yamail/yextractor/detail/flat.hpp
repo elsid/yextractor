@@ -9,7 +9,6 @@
 #include <yamail/yextractor/optional.hpp>
 #include <yamail/yextractor/parameter.hpp>
 #include <yamail/yextractor/required.hpp>
-#include <yamail/yextractor/set.hpp>
 
 namespace yamail {
 namespace yextractor {
@@ -43,9 +42,6 @@ auto flat(std::tuple<Values ...>&& values)
         -> decltype(Flat<sizeof ... (Values), Values ...>::flat(std::move(values)));
 
 template <class ... Values>
-auto flat(Set<Values ...>&& values) -> decltype(flat(std::move(values.values)));
-
-template <class ... Values>
 auto flat(Any<Values ...>&& values) -> decltype(flat(std::move(values.values)));
 
 template <class ... Values>
@@ -71,11 +67,6 @@ auto flatValue(First<Values ...>&& values) -> decltype(flat(std::move(values.val
 
 template <class ... Values>
 auto flatValue(Every<Values ...>&& values) -> decltype(flat(std::move(values.values))) {
-    return flat(std::move(values.values));
-}
-
-template <class ... Values>
-auto flatValue(Set<Values ...>&& values) -> decltype(flat(std::move(values.values))) {
     return flat(std::move(values.values));
 }
 
@@ -111,15 +102,20 @@ struct Flat<0, Values ...> {
     }
 };
 
+template <class Value>
+auto flat(Required<Value>&& value) -> decltype(flatValue(std::move(value))) {
+    return flatValue(std::move(value));
+}
+
+template <class Value>
+auto flat(Optional<Value>&& value) -> decltype(flatValue(std::move(value))) {
+    return flatValue(std::move(value));
+}
+
 template <class ... Values>
 auto flat(std::tuple<Values ...>&& values)
         -> decltype(Flat<sizeof ... (Values), Values ...>::flat(std::move(values))) {
     return Flat<sizeof ... (Values), Values ...>::flat(std::move(values));
-}
-
-template <class ... Values>
-auto flat(Set<Values ...>&& values) -> decltype(flat(std::move(values.values))) {
-    return flat(std::move(values.values));
 }
 
 template <class ... Values>

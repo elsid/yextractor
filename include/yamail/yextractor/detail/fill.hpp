@@ -7,7 +7,6 @@
 #include <yamail/yextractor/parameter.hpp>
 #include <yamail/yextractor/required.hpp>
 #include <yamail/yextractor/errors.hpp>
-#include <yamail/yextractor/set.hpp>
 #include <yamail/yextractor/first.hpp>
 #include <yamail/yextractor/detail/to_string.hpp>
 
@@ -29,11 +28,6 @@ struct Fill {
     const Source& source;
 
     Fill(const Source& source) : source(source) {}
-
-    template <class ... Values>
-    Errors fill(Set<Values ...>& value) const {
-        return fillEvery<sizeof ...(Values)>(value.values);
-    }
 
     template <class ... Values>
     Errors fill(Any<Values ...>& value) const {

@@ -75,12 +75,6 @@ std::string toString(const Every<Values ...>& value) {
     return "(" + ToString<sizeof ... (Values), Separator::And, Values ...>::convert(value.values) + ")";
 }
 
-template <class ... Values>
-std::string toString(const Set<Values ...>& value) {
-    using namespace detail;
-    return "(" + ToString<sizeof ... (Values), Separator::Comma, Values ...>::convert(value.values) + ")";
-}
-
 } // namespace yextractor
 } // namespace yamail
 
