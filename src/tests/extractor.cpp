@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 
 #include <yamail/yextractor.hpp>
+#include <yamail/yextractor/expression.hpp>
 
 namespace {
 
@@ -46,61 +47,61 @@ DEFINE_PARAMETER(ParamE, std::string, "e")
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Required<ParamA>>(Source())),
+        Expression<Required<ParamA>>::Type,
         std::tuple<ParamA>
     >::value,
     "Extractor().get<Required<ParamA>>(Source()) doesn't returns std::tuple<ParamA>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Optional<ParamA>>(Source())),
+        Expression<Optional<ParamA>>::Type,
         std::tuple<ParamA>
     >::value,
     "Extractor().get<Optional<ParamA>>(Source()) doesn't returns std::tuple<ParamA>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Every<ParamA, ParamB>>(Source())),
+        Expression<Every<ParamA, ParamB>>::Type,
         std::tuple<ParamA, ParamB>
     >::value,
     "Extractor().get<Every<ParamA, ParamB>>(Source()) doesn't returns std::tuple<ParamA, ParamB>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Every<Optional<ParamA>, Optional<ParamB>>>(Source())),
+        Expression<Every<Optional<ParamA>, Optional<ParamB>>>::Type,
         std::tuple<ParamA, ParamB>
     >::value,
     "Extractor().get<Every<Optional<ParamA>, Optional<ParamB>>>(Source()) doesn't returns std::tuple<ParamA, ParamB>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Every<ParamA, ParamB>>(Source())),
+        Expression<Every<ParamA, ParamB>>::Type,
         std::tuple<ParamA, ParamB>
     >::value,
     "Extractor().get<Every<ParamA, ParamB>>(Source()) doesn't returns std::tuple<ParamA, ParamB>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<Any<ParamA, ParamB>>(Source())),
+        Expression<Any<ParamA, ParamB>>::Type,
         std::tuple<ParamA, ParamB>
     >::value,
     "Extractor().get<Any<ParamA, ParamB>>(Source()) doesn't returns std::tuple<ParamA, ParamB>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<First<ParamA, ParamB>>(Source())),
+        Expression<First<ParamA, ParamB>>::Type,
         std::tuple<ParamA, ParamB>
     >::value,
     "Extractor().get<First<ParamA, ParamB>>(Source()) doesn't returns std::tuple<ParamA, ParamB>");
 
 static_assert(
     std::is_same<
-        decltype(Extractor().get<
+        Expression<
             Every<
                 Any<ParamA, Every<ParamB, ParamWithParser>>,
                 Required<ParamD>,
                 Optional<ParamE>
-            >>(Source())),
+            >>::Type,
         std::tuple<ParamA, ParamB, ParamWithParser, ParamD, ParamE>
     >::value,
     "Extractor().get<\n"
