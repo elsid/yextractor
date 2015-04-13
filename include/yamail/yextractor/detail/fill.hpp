@@ -31,34 +31,50 @@ struct Fill {
 
     template <class ... Values>
     Errors fill(Any<Values ...>& value) const {
-        return fillAny<sizeof ...(Values)>(value.values)
-                || Errors("not any of parameters " + toString(value)
-                          + " are present");
+        auto errors = fillAny<sizeof ...(Values)>(value.values);
+        if (errors.empty()) {
+            return errors;
+        }
+        return errors || Errors("not any of parameters " + toString(value)
+                                + " are present");
     }
 
     template <class ... Values>
     Errors fill(First<Values ...>& value) const {
-        return fillFirst<sizeof ...(Values)>(value.values)
-                || Errors("not any of parameters " + toString(value)
-                          + " are present when looking for first");
+        auto errors = fillFirst<sizeof ...(Values)>(value.values);
+        if (errors.empty()) {
+            return errors;
+        }
+        return errors || Errors("not any of parameters " + toString(value)
+                                + " are present when looking for first");
     }
 
     template <class ... Values>
     Errors fill(Every<Values ...>& value) const {
-        return fillEvery<sizeof ...(Values)>(value.values)
-                || Errors("not every of parameters " + toString(value)
-                          + " are present");
+        auto errors = fillEvery<sizeof ...(Values)>(value.values);
+        if (errors.empty()) {
+            return errors;
+        }
+        return errors || Errors("not every of parameters " + toString(value)
+                                + " are present");
     }
 
     template <class T>
     Errors fill(Required<T>& required) const {
-        return fill(required.value, required.name(), required.parser)
-                || Errors("parameter '" + required.name() + "' is required");
+        auto errors = fill(required.value, required.name(), required.parser);
+        if (errors.empty()) {
+            return errors;
+        }
+        return errors || Errors("parameter '" + required.name() + "' is required");
     }
 
     template <class T>
     Errors fill(Optional<T>& optional) const {
-        return fill(optional.value, optional.name(), optional.parser) || Errors();
+        auto errors = fill(optional.value, optional.name(), optional.parser);
+        if (errors.empty()) {
+            return errors;
+        }
+        return errors || Errors();
     }
 
     template <class T>
@@ -138,11 +154,11 @@ struct FillFirst : Fill<Source> {
     FillFirst(const Source& source) : Base(source) {}
 
     Errors fill(std::tuple<Values ...>& values) const {
-        const auto errors = FillFirst<left - 1, Source, Values ...>(this->source).fill(values);
+        auto errors = FillFirst<left - 1, Source, Values ...>(this->source).fill(values);
         if (errors.empty()) {
             return errors;
         }
-        return Base::fill(std::get<left - 1>(values)) || errors;
+        return Base::fill(std::get<left - 1>(values)) || std::move(errors);
     }
 };
 

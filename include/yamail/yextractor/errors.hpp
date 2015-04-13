@@ -17,18 +17,18 @@ public:
     template <class ... Values>
     Errors(const std::initializer_list<std::string>& errors) : errors_(errors) {}
 
-    Errors& operator &&(const Errors& other) {
+    Errors& operator &&(Errors&& other) {
         if (!empty() || !other.empty()) {
-            addErrors(other.errors_);
+            addErrors(std::move(other.errors_));
         } else {
             errors_.clear();
         }
         return *this;
     }
 
-    Errors& operator ||(const Errors& other) {
+    Errors& operator ||(Errors&& other) {
         if (!empty() && !other.empty()) {
-            addErrors(other.errors_);
+            addErrors(std::move(other.errors_));
         } else {
             errors_.clear();
         }
@@ -53,8 +53,10 @@ public:
 private:
     std::deque<std::string> errors_;
 
-    void addErrors(const std::deque<std::string>& other) {
-        std::copy(other.begin(), other.end(), std::front_inserter(errors_));
+    void addErrors(std::deque<std::string>&& other) {
+        for (auto&& error : other) {
+            errors_.emplace_front(std::move(error));
+        }
     }
 };
 
