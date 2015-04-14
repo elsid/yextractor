@@ -3,7 +3,8 @@ find_package(Boost REQUIRED)
 add_executable(test
     main.cpp
     flat.cpp
-    extractor.cpp)
+    extractor.cpp
+    exclude.cpp)
 
 set(LIBRARIES
     -pthread
