@@ -83,23 +83,23 @@ int main(int, char *[]) {
 
     Extractor extractor;
 
-    std::cout << "Trying extract values from filled map..." << std::endl;
+    std::cout << "\nTrying extract values from filled map..." << std::endl;
 
     const auto filledValues = extractor.get<GetParameters>(source);
 
     if (extractor.errors().empty()) {
         printValues(filledValues);
     } else {
-        std::cout << "Something is wrong" << std::endl;
+        std::cout << "Something is wrong." << std::endl;
         printErrors(extractor.errors());
     }
 
-    std::cout << "Trying extract values from empty map..." << std::endl;
+    std::cout << "\nTrying extract values from empty map..." << std::endl;
 
     const auto emptyValues = extractor.get<GetParameters>(Source());
 
     if (extractor.errors().empty()) {
-        std::cout << "I don't have any idea why it has happend..." << std::endl;
+        std::cout << "I don't have any idea why it has happend." << std::endl;
         printValues(emptyValues);
     } else {
         printErrors(extractor.errors());
@@ -111,12 +111,12 @@ int main(int, char *[]) {
         {"settings_list", ""},
     };
 
-    std::cout << "Trying extract values from map with wrong values..." << std::endl;
+    std::cout << "\nTrying extract values from map with wrong values..." << std::endl;
 
     const auto wrongValues = extractor.get<GetParameters>(wrongSource);
 
     if (extractor.errors().empty()) {
-        std::cout << "May be it's not really wrong..." << std::endl;
+        std::cout << "May be it's not really wrong." << std::endl;
         printValues(wrongValues);
     } else {
         printErrors(extractor.errors());
