@@ -32,6 +32,7 @@ struct Parameter {
     static std::string name() { return Tag::name; }
     const Type& get() const { return value.get(); }
     operator Type() const { return get(); }
+    bool empty() const { return !value.is_initialized(); }
 
     bool operator == (const Parameter& other) const {
         return value == other.value;
