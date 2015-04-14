@@ -19,7 +19,7 @@ struct GetPosition<T, position, T, Values ...> {
 
 template <class T, const std::size_t position, class U, class ... Values>
 struct GetPosition<T, position, U, Values ...> {
-    static constexpr auto value = GetPosition<T, position + 1, Values ...>::value;
+    static constexpr std::size_t value = GetPosition<T, position + 1, Values ...>::value;
 };
 
 template <class Parameter, class ... Values>
