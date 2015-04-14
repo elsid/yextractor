@@ -9,7 +9,7 @@ namespace yextractor {
 template <class T>
 struct Required {
     using Type = T;
-    using Value = boost::optional<Type>;
+    using Value = detail::Value<Type>;
 
     Value value;
 };

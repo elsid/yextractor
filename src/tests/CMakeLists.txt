@@ -4,7 +4,8 @@ add_executable(test
     main.cpp
     flat.cpp
     extractor.cpp
-    exclude.cpp)
+    exclude.cpp
+    parameter.cpp)
 
 set(LIBRARIES
     -pthread

@@ -83,7 +83,7 @@ struct Fill {
     }
 
     template <class T, class Parser>
-    Errors fill(boost::optional<T>& value, const std::string& name, Parser parse) const {
+    Errors fill(detail::Value<T>& value, const std::string& name, Parser parse) const {
         const auto it = source.find(name);
         if (it == source.end()) {
             return Errors("parameter '" + name + "' not found");

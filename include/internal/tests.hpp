@@ -8,6 +8,7 @@
 namespace tests {
 
 using namespace yamail::yextractor;
+using namespace yamail::yextractor::detail;
 
 template <class ... Values>
 std::ostream& operator <<(std::ostream &stream,
@@ -29,6 +30,16 @@ std::ostream& operator <<(std::ostream &stream,
         stream << pair.first << ": " << pair.second << std::endl;
     }
     return stream;
+}
+
+template <class T>
+inline std::ostream& operator <<(std::ostream &stream, const Parameter<T>& value) {
+    return value.initialized() ? stream << value.get() : stream << "none";
+}
+
+template <class T>
+inline std::ostream& operator <<(std::ostream &stream, const Value<T>& value) {
+    return value.initialized() ? stream << value.get() : stream << "none";
 }
 
 } // namespace tests

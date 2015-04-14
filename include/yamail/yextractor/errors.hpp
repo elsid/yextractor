@@ -2,6 +2,7 @@
 #define YAMAIL_YEXTRACTOR_ERRORS_HPP
 
 #include <deque>
+#include <string>
 
 namespace yamail {
 namespace yextractor {

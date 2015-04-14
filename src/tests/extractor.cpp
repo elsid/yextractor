@@ -1,5 +1,4 @@
 #include <map>
-#include <ostream>
 
 #include <boost/algorithm/string/predicate.hpp>
 

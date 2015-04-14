@@ -1,10 +1,9 @@
 #ifndef YAMAIL_YEXTRACTOR_PARAMETER_HPP
 #define YAMAIL_YEXTRACTOR_PARAMETER_HPP
 
-#include <boost/optional.hpp>
-
 #include <yamail/yextractor/detail/get.hpp>
 #include <yamail/yextractor/detail/parser.hpp>
+#include <yamail/yextractor/detail/value.hpp>
 
 namespace yamail {
 namespace yextractor {
@@ -13,7 +12,7 @@ template <class Tag>
 struct Parameter {
     using Type = typename Tag::Value;
     using Parser = typename Tag::Parser;
-    using Value = boost::optional<Type>;
+    using Value = detail::Value<Type>;
 
     Value value;
     Parser parser;
@@ -26,16 +25,23 @@ struct Parameter {
     template <class ... Values>
     Parameter(const std::tuple<Values ...>& values)
             : value(detail::get<Parameter>(values)) {}
+    template <class ... Values>
+    Parameter(std::tuple<Values ...>& values)
+            : value(detail::get<Parameter>(values)) {}
     Parameter(const Parameter &) = delete;
     Parameter(Parameter &&) = default;
 
     static std::string name() { return Tag::name; }
     const Type& get() const { return value.get(); }
-    operator Type() const { return get(); }
-    bool empty() const { return !value.is_initialized(); }
+    Type&& take() { return value.take(); }
+    bool initialized() const { return value.initialized(); }
 
     bool operator == (const Parameter& other) const {
         return value == other.value;
+    }
+
+    bool operator != (const Parameter& other) const {
+        return value != other.value;
     }
 };
 

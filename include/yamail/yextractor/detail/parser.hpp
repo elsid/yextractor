@@ -3,8 +3,6 @@
 
 #include <yamail/yextractor/errors.hpp>
 
-#include <boost/optional.hpp>
-
 namespace yamail {
 namespace yextractor {
 namespace detail {
@@ -13,14 +11,6 @@ template <class T>
 struct Parser {
     Errors operator()(T& dst, const std::string& src) const {
         dst = T(src);
-        return Errors();
-    }
-};
-
-template <class T>
-struct Parser<boost::optional<T>> {
-    Errors operator()(boost::optional<T>& dst, const std::string& src) const {
-        dst = Parser<T>()(src);
         return Errors();
     }
 };

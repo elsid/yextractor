@@ -23,8 +23,13 @@ struct GetPosition<T, position, U, Values ...> {
 };
 
 template <class Parameter, class ... Values>
-typename Parameter::Value get(const std::tuple<Values ...>& t) {
+const typename Parameter::Value& get(const std::tuple<Values ...>& t) {
     return std::get<GetPosition<Parameter, 0, Values ...>::value>(t).value;
+}
+
+template <class Parameter, class ... Values>
+typename Parameter::Value&& get(std::tuple<Values ...>& t) {
+    return std::move(std::get<GetPosition<Parameter, 0, Values ...>::value>(t).value);
 }
 
 } // namespace detail
