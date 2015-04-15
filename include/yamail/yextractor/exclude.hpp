@@ -32,9 +32,10 @@ struct Exclude<0, Parameters, Container> {
 } // namespace detail
 
 template <class Parameters, class Container>
-void exclude(Container& container) {
+Container& exclude(Container& container) {
     static constexpr auto size = std::tuple_size<Parameters>::value;
     detail::Exclude<size, Parameters, Container>::exclude(container);
+    return container;
 }
 
 } // namespace yextractor
