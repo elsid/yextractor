@@ -17,20 +17,24 @@ yextractor
 Нужно определить типы параметров, используя макрос ```DEFINE_PARAMETER``` или
 ```DEFINE_PARAMETER_WITH_PARSER``` для использования специализированного парсера.
 
+```c++
+DEFINE_PARAMETER(type_name, value_type, "key")
+DEFINE_PARAMETER_WITH_PARSER(type_name, value_type, "key", parser_type)
 ```
-DEFINE_PARAMETER(имя_типа, тип_значения, "ключ")
-DEFINE_PARAMETER_WITH_PARSER(имя_типа, тип_значения, "ключ", тип_парсера)
-```
+
+Подробнее см. [код](include/yamail/yextractor/parameter.hpp).
 
 Пример:
 
-```DEFINE_PARAMETER(SomeParameter, std::string, "some")```
+```c++
+DEFINE_PARAMETER(SomeParameter, std::string, "some")
+```
 
 ## Тип парсера
 
 Должен иметь интерфейс:
 
-```
+```c++
 struct Parser {
     yamail::yextractor::Errors operator ()(T& dst, const std::string& src) const;
 };
@@ -39,7 +43,7 @@ struct Parser {
 ```T``` - тип значения параметра
 
 Пример:
-```
+```c++
 struct ParamParser {
     Errors operator ()(std::string& dst, const std::string& src) const {
         if (!boost::starts_with(src, "prefix")) {
@@ -53,7 +57,7 @@ struct ParamParser {
 DEFINE_PARAMETER_WITH_PARSER(AnotherParameter, std::string, "another", ParamParser)
 ```
 
-Объект создается для каждого значения параметра конструктором по-умолчанию.
+Объект парсера создается для каждого значения параметра конструктором по-умолчанию.
 
 ## Выражения для верификации
 
@@ -63,56 +67,74 @@ DEFINE_PARAMETER_WITH_PARSER(AnotherParameter, std::string, "another", ParamPars
 
 #### Required
 
-```template Required <class Parameter>```
+```c++
+template Required <class Parameter>
+```
 
 Задает обязательный параметр. Верификация проходит, если значение параметра прошло верификацию.
 
 Пример:
 
-```using GetSomeRequiredParameter = Required<SomeParameter>;```
+```c++
+using GetSomeRequiredParameter = Required<SomeParameter>;
+```
 
 #### Optional
 
-```template Optional <class Parameter>```
+```c++
+template Optional <class Parameter>
+```
 
 Задает необязательный параметр. Верификация проходит всегда.
 
 Пример:
-```
+```c++
 using GetSomeOptionalParameter = Optional<SomeParameter>;
 ```
 
 #### Any
 
-```template Any <class ... Values>```
+```c++
+template Any <class ... Values>
+```
 
 Задает набор выражений. Верификация проходит, если хотя бы одно значение прошло верификацию.
 Заполняются все прошедшие верификацию значения.
 
 Пример:
 
-```using GetAnyParameter = Any<SomeParameter, AnotherParameter>;```
+```c++
+using GetAnyParameter = Any<SomeParameter, AnotherParameter>;
+```
 
 #### First
 
-```template First <class ... Values>```
+```c++
+template First <class ... Values>
+```
 
 Задает набор выражений. Верификация проходит, если хотя бы одно значение прошло верификацию.
 Заполняется первое прошедшее верификацию значение.
 
 Пример:
 
-```using GetFirstParameter = First<SomeParameter, AnotherParameter>;```
+```c++
+using GetFirstParameter = First<SomeParameter, AnotherParameter>;
+```
 
 #### Every
 
-```template Every <class ... Values>```
+```c++
+template Every <class ... Values>
+```
 
 Задает набор выражений. Верификация проходит, если все значения прошли верификацию.
 
 Пример:
 
-```using GetEveryParameter = Every<SomeParameter, AnotherParameter>;```
+```c++
+using GetEveryParameter = Every<SomeParameter, AnotherParameter>;
+```
 
 ### Сочетания типов выражений
 
@@ -120,10 +142,10 @@ using GetSomeOptionalParameter = Optional<SomeParameter>;
 ```Any```, ```First``` и ```Every``` можно использовать в любых сочетаниях.
 
 Примеры:
-```
-Any<Every<A, B>, Every<C, D>>
-Every<Any<A, B>, Any<C, D>>
-Every<A, B, Optional<C>>
+```c++
+using Example1 = Any<Every<A, B>, Every<C, D>>;
+using Example2 = Every<Any<A, B>, Any<C, D>>;
+using Example3 = Every<A, B, Optional<C>>;
 ```
 
 ## Извлечение значений
@@ -133,6 +155,38 @@ Every<A, B, Optional<C>>
 Если в выражении параметры дублируются, в результате будет так же.
 Значения обернуты в ```detail::Value``` (аналог ```boost::optional```).
 Тип результата можно получить с помощью ```Expression<T>::Type```.
+
+Объекты классов именованных параметров можно создавать на основе результата с
+помощью конструкторов:
+```c++
+template <class ... Values>
+Parameter(const std::tuple<Values ...>& values);
+```
+
+Копирует значение из результата (см. [тест](src/tests/parameter.cpp#L25-L37)).
+
+```c++
+template <class ... Values>
+Parameter(std::tuple<Values ...>& values);
+```
+
+Перемещает значение из результата. Повторное применение создаст
+неинициализированный параметр (см. [тест](src/tests/parameter.cpp#L39-L50)).
+
+Проверить, инициализирован ли параметр, можно с помощью метода:
+```c++
+bool Parameter::initialized() const;
+```
+
+Значение параметра можно получить по константной ссылке (см. [тест](src/tests/parameter.cpp#L65-L69)):
+```c++
+const Parameter::Type& Parameter::get() const;
+```
+
+Или по universal reference (см. [тест](src/tests/parameter.cpp#L71-L77)):
+```c++
+Parameter::Type&& Parameter::take();
+```
 
 ## Ошибки верификации
 
