@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 2.6)
-set(YAMAIL_CMAKE_MODULES ${CMAKE_INSTALL_PREFIX}/share/cmake_helpers)
-include(${YAMAIL_CMAKE_MODULES}/yamail.cmake)
 
-yamail_project(yextractor)
+project(yextractor)
 
-add_subdirectory(include)
-add_subdirectory(src)
+find_package(Boost REQUIRED)
 
-yamail_configuration_message()
+include_directories(
+    ${Boost_INCLUDE_DIRS}
+    ${PROJECT_SOURCE_DIR}/include)
+
+install(DIRECTORY include/ DESTINATION include COMPONENT development)
+
+add_subdirectory(tests)
+add_subdirectory(examples)

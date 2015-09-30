@@ -163,7 +163,7 @@ template <class ... Values>
 Parameter(const std::tuple<Values ...>& values);
 ```
 
-Копирует значение из результата (см. [тест](src/tests/parameter.cpp#L25-L37)).
+Копирует значение из результата (см. [тест](tests/parameter.cpp#L25-L37)).
 
 ```c++
 template <class ... Values>
@@ -171,19 +171,19 @@ Parameter(std::tuple<Values ...>& values);
 ```
 
 Перемещает значение из результата. Повторное применение создаст
-неинициализированный параметр (см. [тест](src/tests/parameter.cpp#L39-L50)).
+неинициализированный параметр (см. [тест](tests/parameter.cpp#L39-L50)).
 
 Проверить, инициализирован ли параметр, можно с помощью метода:
 ```c++
 bool Parameter::initialized() const;
 ```
 
-Значение параметра можно получить по константной ссылке (см. [тест](src/tests/parameter.cpp#L65-L69)):
+Значение параметра можно получить по константной ссылке (см. [тест](tests/parameter.cpp#L65-L69)):
 ```c++
 const Parameter::Type& Parameter::get() const;
 ```
 
-Или по universal reference (см. [тест](src/tests/parameter.cpp#L71-L77)):
+Или по universal reference (см. [тест](tests/parameter.cpp#L71-L77)):
 ```c++
 Parameter::Type&& Parameter::take();
 ```
@@ -196,4 +196,4 @@ Parameter::Type&& Parameter::take();
 
 # Примеры
 
-См. [здесь](src/examples/main.cpp)
+См. [здесь](examples/main.cpp)

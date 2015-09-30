@@ -1,7 +1,6 @@
-find_package(Boost REQUIRED)
-
 add_executable(example
-    main.cpp)
+    main.cpp
+)
 
 add_custom_target(examples
     COMMAND example

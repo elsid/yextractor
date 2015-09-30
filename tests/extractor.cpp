@@ -7,7 +7,7 @@
 #include <yamail/yextractor.hpp>
 #include <yamail/yextractor/expression.hpp>
 
-#include <internal/tests.hpp>
+#include "tests.hpp"
 
 namespace {
 

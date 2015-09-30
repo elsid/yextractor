@@ -1,16 +1,16 @@
-find_package(Boost REQUIRED)
-
 add_executable(test
     main.cpp
     flat.cpp
     extractor.cpp
     exclude.cpp
-    parameter.cpp)
+    parameter.cpp
+)
 
 set(LIBRARIES
     -pthread
     -lgtest
-    -lgmock)
+    -lgmock
+)
 
 target_link_libraries(test ${LIBRARIES})
 
