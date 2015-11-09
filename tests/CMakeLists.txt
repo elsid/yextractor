@@ -1,4 +1,4 @@
-add_executable(test
+add_executable(yextractor_test
     main.cpp
     flat.cpp
     extractor.cpp
@@ -12,8 +12,12 @@ set(LIBRARIES
     -lgmock
 )
 
-target_link_libraries(test ${LIBRARIES})
+target_link_libraries(yextractor_test ${LIBRARIES})
 
-add_custom_target(check
-    COMMAND test
-)
+if(NOT TARGET check)
+    add_custom_target(check COMMAND yextractor_test)
+else()
+    add_custom_target(run_yextractor_test COMMAND yextractor_test)
+    set_property(TARGET run_yextractor_test PROPERTY EXCLUDE_FROM_ALL TRUE)
+    add_dependencies(check run_yextractor_test)
+endif()
