@@ -11,6 +11,11 @@ std::string toString(const Parameter<Tag>& value) {
     return "'" + value.name() + "'";
 }
 
+template <class Tag>
+std::string toString(const Optional<Parameter<Tag>>& value) {
+    return "optional " + toString(static_cast<const Parameter<Tag>&>(value));
+}
+
 namespace detail {
 
 struct Separator {

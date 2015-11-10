@@ -4,6 +4,7 @@ add_executable(yextractor_test
     extractor.cpp
     exclude.cpp
     parameter.cpp
+    to_string.cpp
 )
 
 set(LIBRARIES
