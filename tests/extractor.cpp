@@ -115,14 +115,14 @@ TEST(ExtractorTest, extract_every_of_one_param_should_succeed) {
     Extractor extractor;
     const Source source = {{"a", "42"}};
     EXPECT_EQ(extractor.get<Every<ParamA>>(source), std::make_tuple(ParamA("42")));
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_required_param_should_succeed) {
     Extractor extractor;
     const Source source = {{"a", "42"}};
     EXPECT_EQ(extractor.get<Required<ParamA>>(source), std::make_tuple(ParamA("42")));
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_required_param_from_empty_source_return_error) {
@@ -137,13 +137,13 @@ TEST(ExtractorTest, extract_optional_param_should_succeed) {
     Extractor extractor;
     const Source source = {{"a", "42"}};
     EXPECT_EQ(extractor.get<Optional<ParamA>>(source), std::make_tuple(ParamA("42")));
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_optional_param_from_empty_source_should_return_succeed) {
     Extractor extractor;
     EXPECT_EQ(extractor.get<Optional<ParamA>>(Source()), std::make_tuple(ParamA()));
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_two_params_from_set_of_two_params_should_succeed) {
@@ -152,7 +152,7 @@ TEST(ExtractorTest, extract_two_params_from_set_of_two_params_should_succeed) {
     const auto real = extractor.get<Every<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA("42"), ParamB("13"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_required_param_with_custom_parser_should_succeed) {
@@ -161,7 +161,7 @@ TEST(ExtractorTest, extract_required_param_with_custom_parser_should_succeed) {
     const auto real = extractor.get<Required<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser("prefix042"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_required_param_with_custom_parser_that_value_is_wrong_should_return_errors) {
@@ -181,7 +181,7 @@ TEST(ExtractorTest, extract_optional_param_with_custom_parser_that_value_is_wron
     const auto real = extractor.get<Optional<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser());
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_every_of_two_params_should_succeed) {
@@ -190,7 +190,7 @@ TEST(ExtractorTest, extract_every_of_two_params_should_succeed) {
     const auto real = extractor.get<Every<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA("42"), ParamB("13"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_every_of_two_params_from_source_without_first_param_value_should_return_errors) {
@@ -241,7 +241,7 @@ TEST(ExtractorTest, extract_any_of_two_params_should_succeed) {
     const auto real = extractor.get<Any<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA("42"), ParamB("13"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_any_of_two_params_from_source_without_one_param_value_should_succeed) {
@@ -250,7 +250,7 @@ TEST(ExtractorTest, extract_any_of_two_params_from_source_without_one_param_valu
     const auto real = extractor.get<Any<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA(), ParamB("13"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_any_of_two_params_from_empty_source_should_return_errors) {
@@ -273,7 +273,7 @@ TEST(ExtractorTest, extract_first_of_two_params_should_succeed) {
     const auto real = extractor.get<First<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA("42"), ParamB());
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_first_of_two_params_from_source_without_one_param_should_succeed) {
@@ -282,7 +282,7 @@ TEST(ExtractorTest, extract_first_of_two_params_from_source_without_one_param_sh
     const auto real = extractor.get<First<ParamA, ParamB>>(source);
     const auto expected = std::make_tuple(ParamA(), ParamB("13"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 TEST(ExtractorTest, extract_first_of_two_params_from_empty_source_should_return_errors) {
@@ -318,7 +318,7 @@ TEST(ExtractorTest, extract_complex_expression_should_succeed) {
                                           ParamWithParser("prefix042"),
                                           ParamD("str"), ParamE("y"));
     EXPECT_EQ(real, expected);
-    EXPECT_TRUE(extractor.errors().empty());
+    EXPECT_EQ(extractor.errors(), Errors());
 }
 
 } // namespace
