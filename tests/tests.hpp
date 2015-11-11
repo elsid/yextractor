@@ -17,10 +17,11 @@ std::ostream& operator <<(std::ostream &stream,
 }
 
 inline std::ostream& operator <<(std::ostream &stream, const Errors& errors) {
+    stream << "[" << std::endl;
     for (const auto& error : errors) {
-        stream << error << std::endl;
+        stream << "    " << error << std::endl;
     }
-    return stream;
+    return stream << "]" << std::endl;;
 }
 
 template <class Key, class Value>
