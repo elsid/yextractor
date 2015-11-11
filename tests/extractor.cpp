@@ -129,7 +129,7 @@ TEST(ExtractorTest, extract_required_param_from_empty_source_return_error) {
     Extractor extractor;
     EXPECT_EQ(extractor.get<Required<ParamA>>(Source()), std::make_tuple(ParamA()));
     EXPECT_FALSE(extractor.errors().empty());
-    const Errors errors({"parameter 'a' is required", "parameter 'a' not found"});
+    const Errors errors({"parameter 'a' is required"});
     EXPECT_EQ(extractor.errors(), errors);
 }
 
@@ -140,7 +140,7 @@ TEST(ExtractorTest, extract_optional_param_should_succeed) {
     EXPECT_EQ(extractor.errors(), Errors());
 }
 
-TEST(ExtractorTest, extract_optional_param_from_empty_source_should_return_succeed) {
+TEST(ExtractorTest, extract_optional_param_from_empty_source_should_succeed) {
     Extractor extractor;
     EXPECT_EQ(extractor.get<Optional<ParamA>>(Source()), std::make_tuple(ParamA()));
     EXPECT_EQ(extractor.errors(), Errors());
@@ -170,18 +170,18 @@ TEST(ExtractorTest, extract_required_param_with_custom_parser_that_value_is_wron
     const auto real = extractor.get<Required<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser());
     EXPECT_EQ(real, expected);
-    EXPECT_FALSE(extractor.errors().empty());
-    const Errors errors = {"parameter 'c' is required", "value does't not starts with 'prefix'"};
+    const Errors errors = {"value does't not starts with 'prefix'"};
     EXPECT_EQ(extractor.errors(), errors);
 }
 
-TEST(ExtractorTest, extract_optional_param_with_custom_parser_that_value_is_wrong_should_succeed) {
+TEST(ExtractorTest, extract_optional_param_with_custom_parser_that_value_is_wrong_should_return_errors) {
     Extractor extractor;
     const Source source = {{"c", "042"}};
     const auto real = extractor.get<Optional<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser());
     EXPECT_EQ(real, expected);
-    EXPECT_EQ(extractor.errors(), Errors());
+    const Errors errors = {"value does't not starts with 'prefix'"};
+    EXPECT_EQ(extractor.errors(), errors);
 }
 
 TEST(ExtractorTest, extract_every_of_two_params_should_succeed) {

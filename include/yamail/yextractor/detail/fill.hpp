@@ -61,32 +61,26 @@ struct Fill {
 
     template <class T>
     Errors fill(Required<T>& required) const {
-        auto errors = fill(required.value, required.name(), required.parser);
-        if (errors.empty()) {
-            return errors;
-        }
-        return errors || Errors("parameter '" + required.name() + "' is required");
+        return fill(required.value, required.name(), required.parser,
+                    Errors("parameter '" + required.name() + "' is required"));
     }
 
     template <class T>
     Errors fill(Optional<T>& optional) const {
-        auto errors = fill(optional.value, optional.name(), optional.parser);
-        if (errors.empty()) {
-            return errors;
-        }
-        return errors || Errors();
+        return fill(optional.value, optional.name(), optional.parser, Errors());
     }
 
     template <class T>
     Errors fill(Parameter<T>& parameter) const {
-        return fill(parameter.value, parameter.name(), parameter.parser);
+        return fill(parameter.value, parameter.name(), parameter.parser,
+                    Errors("parameter '" + parameter.name() + "' not found"));
     }
 
     template <class T, class Parser>
-    Errors fill(detail::Value<T>& value, const std::string& name, Parser parse) const {
+    Errors fill(detail::Value<T>& value, const std::string& name, Parser parse, Errors ifNotFound) const {
         const auto it = source.find(name);
         if (it == source.end()) {
-            return Errors("parameter '" + name + "' not found");
+            return ifNotFound;
         } else {
             T parsedValue;
             const auto errors = parse(parsedValue, it->second);
