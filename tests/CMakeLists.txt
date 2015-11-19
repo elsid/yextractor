@@ -16,9 +16,8 @@ set(LIBRARIES
 target_link_libraries(yextractor_test ${LIBRARIES})
 
 if(NOT TARGET check)
-    add_custom_target(check COMMAND yextractor_test)
-else()
-    add_custom_target(run_yextractor_test COMMAND yextractor_test)
-    set_property(TARGET run_yextractor_test PROPERTY EXCLUDE_FROM_ALL TRUE)
-    add_dependencies(check run_yextractor_test)
+    add_custom_target(check)
 endif()
+
+add_test(yextractor_test yextractor_test)
+add_dependencies(check yextractor_test)
