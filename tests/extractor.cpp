@@ -129,7 +129,7 @@ TEST(ExtractorTest, extract_required_param_from_empty_source_return_error) {
     Extractor extractor;
     EXPECT_EQ(extractor.get<Required<ParamA>>(Source()), std::make_tuple(ParamA()));
     EXPECT_FALSE(extractor.errors().empty());
-    const Errors errors({"parameter 'a' is required"});
+    const Errors errors({"parameter 'a' not found"});
     EXPECT_EQ(extractor.errors(), errors);
 }
 

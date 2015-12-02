@@ -62,7 +62,7 @@ struct Fill {
     template <class T>
     Errors fill(Required<T>& required) const {
         return fill(required.value, required.name(), required.parser,
-                    Errors("parameter '" + required.name() + "' is required"));
+                    Errors("parameter '" + required.name() + "' not found"));
     }
 
     template <class T>
