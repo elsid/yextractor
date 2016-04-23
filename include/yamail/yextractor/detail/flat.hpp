@@ -49,11 +49,6 @@ template <class ... Values>
 auto flat(Every<Values ...>&& values) -> decltype(flat(std::move(values.values)));
 
 template <class ... Values>
-auto flatValue(std::tuple<Values ...>&& values) -> decltype(flat(std::move(values))) {
-    return flat(std::move(values));
-}
-
-template <class ... Values>
 auto flatValue(Any<Values ...>&& values) -> decltype(flat(std::move(values.values))) {
     return flat(std::move(values.values));
 }

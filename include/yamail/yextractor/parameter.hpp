@@ -18,10 +18,7 @@ struct Parameter {
     Parser parser;
 
     Parameter() = default;
-    Parameter(const Type& value) : value(value) {}
     Parameter(Type&& value) : value(std::move(value)) {}
-    Parameter(const Value& value) : value(value) {}
-    Parameter(Value&& value) : value(std::move(value)) {}
     template <class ... Values>
     Parameter(const std::tuple<Values ...>& values)
             : value(detail::get<Parameter>(values)) {}

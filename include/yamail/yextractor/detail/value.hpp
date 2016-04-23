@@ -25,13 +25,6 @@ public:
         return *this;
     }
 
-    Value& operator =(Value &&other) {
-        value = std::move(other.value);
-        initialized_ = true;
-        other.initialized_ = false;
-        return *this;
-    }
-
     bool operator ==(const Value &other) const {
         return initialized_ && other.initialized_
                 ? value == other.value
@@ -43,7 +36,6 @@ public:
     }
 
     const Type &get() const { return value; }
-    Type &get() { return value; }
 
     Type &&take() {
         initialized_ = false;
