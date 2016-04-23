@@ -44,9 +44,7 @@ public:
         return errors_.empty();
     }
 
-    const std::deque<std::string>& messages() const {
-        return errors_;
-    }
+    const Messages& messages() const { return errors_; }
 
     const_iterator begin() const { return errors_.begin(); }
     const_iterator end() const { return errors_.end(); }

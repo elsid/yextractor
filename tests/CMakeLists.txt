@@ -27,11 +27,13 @@ if(NOT TARGET googletest)
 endif()
 
 add_executable(yextractor_test
-    main.cpp
-    flat.cpp
-    extractor.cpp
+    errors.cpp
     exclude.cpp
+    extractor.cpp
+    flat.cpp
+    main.cpp
     parameter.cpp
+    parser.cpp
     to_string.cpp
 )
 

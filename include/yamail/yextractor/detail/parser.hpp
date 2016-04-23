@@ -8,12 +8,7 @@ namespace yextractor {
 namespace detail {
 
 template <class T>
-struct Parser {
-    Errors operator()(T& dst, const std::string& src) const {
-        dst = T(src);
-        return Errors();
-    }
-};
+struct Parser;
 
 template <>
 struct Parser<std::string> {

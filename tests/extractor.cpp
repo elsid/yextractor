@@ -4,15 +4,11 @@
 
 #include <gtest/gtest.h>
 
-#include <yamail/yextractor.hpp>
 #include <yamail/yextractor/expression.hpp>
-
-#include "tests.hpp"
 
 namespace {
 
 using namespace testing;
-using namespace tests;
 
 using namespace yamail::yextractor;
 using namespace yamail::yextractor::detail;
@@ -108,6 +104,22 @@ TEST(ExtractorTest, extract_from_empty_every_should_return_errors) {
     EXPECT_EQ(extractor.get<Every<>>(Source()), std::tuple<>());
     EXPECT_FALSE(extractor.errors().empty());
     const Errors errors({"not every of parameters () are present", "no values"});
+    EXPECT_EQ(extractor.errors(), errors);
+}
+
+TEST(ExtractorTest, extract_from_empty_any_should_return_errors) {
+    Extractor extractor;
+    EXPECT_EQ(extractor.get<Any<>>(Source()), std::tuple<>());
+    EXPECT_FALSE(extractor.errors().empty());
+    const Errors errors({"not any of parameters () are present", "no values"});
+    EXPECT_EQ(extractor.errors(), errors);
+}
+
+TEST(ExtractorTest, extract_from_empty_first_should_return_errors) {
+    Extractor extractor;
+    EXPECT_EQ(extractor.get<First<>>(Source()), std::tuple<>());
+    EXPECT_FALSE(extractor.errors().empty());
+    const Errors errors({"not any of parameters () are present when looking for first", "no values"});
     EXPECT_EQ(extractor.errors(), errors);
 }
 
@@ -299,24 +311,29 @@ TEST(ExtractorTest, extract_first_of_two_params_from_empty_source_should_return_
     EXPECT_EQ(extractor.errors(), errors);
 }
 
-TEST(ExtractorTest, extract_complex_expression_should_succeed) {
+TEST(ExtractorTest, extract_every_of_every_of_one_param_should_succeed) {
     Extractor extractor;
-    const Source source = {
-        {"a", "42"},
-        {"b", "13"},
-        {"c", "prefix042"},
-        {"d", "str"},
-        {"e", "y"},
-    };
-    using Params = Every<
-        Any<ParamA, Every<ParamB, ParamWithParser>>,
-        Required<ParamD>,
-        Optional<ParamE>
-    >;
-    const auto real = extractor.get<Params>(source);
-    const auto expected = std::make_tuple(ParamA("42"), ParamB("13"),
-                                          ParamWithParser("prefix042"),
-                                          ParamD("str"), ParamE("y"));
+    const Source source({{"a", "42"}});
+    const auto real = extractor.get<Every<Every<ParamA>>>(source);
+    const auto expected = std::make_tuple(ParamA("42"));
+    EXPECT_EQ(real, expected);
+    EXPECT_EQ(extractor.errors(), Errors());
+}
+
+TEST(ExtractorTest, extract_every_of_any_of_one_param_should_succeed) {
+    Extractor extractor;
+    const Source source({{"a", "42"}});
+    const auto real = extractor.get<Every<Any<ParamA>>>(source);
+    const auto expected = std::make_tuple(ParamA("42"));
+    EXPECT_EQ(real, expected);
+    EXPECT_EQ(extractor.errors(), Errors());
+}
+
+TEST(ExtractorTest, extract_every_of_first_of_one_param_should_succeed) {
+    Extractor extractor;
+    const Source source({{"a", "42"}});
+    const auto real = extractor.get<Every<First<ParamA>>>(source);
+    const auto expected = std::make_tuple(ParamA("42"));
     EXPECT_EQ(real, expected);
     EXPECT_EQ(extractor.errors(), Errors());
 }

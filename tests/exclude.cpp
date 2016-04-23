@@ -5,12 +5,9 @@
 #include <yamail/yextractor/parameter.hpp>
 #include <yamail/yextractor/exclude.hpp>
 
-#include "tests.hpp"
-
 namespace {
 
 using namespace testing;
-using namespace tests;
 
 using namespace yamail::yextractor;
 

@@ -2,15 +2,11 @@
 
 #include <gtest/gtest.h>
 
-#include <yamail/yextractor.hpp>
 #include <yamail/yextractor/expression.hpp>
-
-#include "tests.hpp"
 
 namespace {
 
 using namespace testing;
-using namespace tests;
 
 using namespace yamail::yextractor;
 using namespace yamail::yextractor::detail;
