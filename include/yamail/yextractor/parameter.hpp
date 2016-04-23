@@ -31,6 +31,8 @@ struct Parameter {
     Parameter(const Parameter &) = delete;
     Parameter(Parameter &&) = default;
 
+    virtual ~Parameter() {}
+
     static std::string name() { return Tag::name; }
     const Type& get() const { return value.get(); }
     Type&& take() { return value.take(); }
