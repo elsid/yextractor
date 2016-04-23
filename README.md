@@ -47,7 +47,7 @@ struct Parser {
 struct ParamParser {
     Errors operator ()(std::string& dst, const std::string& src) const {
         if (!boost::starts_with(src, "prefix")) {
-            return Errors("value does't not starts with 'prefix'");
+            return Errors("value doesn't not starts with 'prefix'");
         }
         dst = src;
         return Errors();

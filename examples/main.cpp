@@ -11,7 +11,7 @@ using namespace yamail::yextractor;
 struct MdbParser {
     Errors operator ()(std::string &dst, const std::string &src) const {
         if (!boost::starts_with(src, "mdb")) {
-            return Errors("value of 'mdb' parameter does't not starts with 'mdb'");
+            return Errors("value of 'mdb' parameter doesn't not starts with 'mdb'");
         }
         dst = src;
         return Errors();

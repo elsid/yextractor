@@ -18,7 +18,7 @@ using Source = std::map<std::string, std::string>;
 struct ParamParser {
     Errors operator ()(std::string& dst, const std::string& src) const {
         if (!boost::starts_with(src, "prefix")) {
-            return Errors("value does't not starts with 'prefix'");
+            return Errors("value doesn't not starts with 'prefix'");
         }
         dst = src;
         return Errors();
@@ -182,7 +182,7 @@ TEST(ExtractorTest, extract_required_param_with_custom_parser_that_value_is_wron
     const auto real = extractor.get<Required<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser());
     EXPECT_EQ(real, expected);
-    const Errors errors = {"value does't not starts with 'prefix'"};
+    const Errors errors = {"value doesn't not starts with 'prefix'"};
     EXPECT_EQ(extractor.errors(), errors);
 }
 
@@ -192,7 +192,7 @@ TEST(ExtractorTest, extract_optional_param_with_custom_parser_that_value_is_wron
     const auto real = extractor.get<Optional<ParamWithParser>>(source);
     const auto expected = std::make_tuple(ParamWithParser());
     EXPECT_EQ(real, expected);
-    const Errors errors = {"value does't not starts with 'prefix'"};
+    const Errors errors = {"value doesn't not starts with 'prefix'"};
     EXPECT_EQ(extractor.errors(), errors);
 }
 
