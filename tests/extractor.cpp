@@ -215,7 +215,7 @@ TEST(ExtractorTest, extract_every_of_two_params_from_source_without_first_param_
     const Errors errors = {
         "not every of parameters ('a' and 'b') are present",
         "parameter 'a' not found"
-   };
+    };
     EXPECT_EQ(extractor.errors(), errors);
 }
 
@@ -229,7 +229,7 @@ TEST(ExtractorTest, extract_every_of_two_params_from_source_without_second_param
     const Errors errors = {
         "not every of parameters ('a' and 'b') are present",
         "parameter 'b' not found"
-   };
+    };
     EXPECT_EQ(extractor.errors(), errors);
 }
 
