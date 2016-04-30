@@ -1,5 +1,8 @@
 # yextractor
 
+[![Build Status](https://travis-ci.org/elsid/yextractor.svg?branch=master)](https://travis-ci.org/elsid/yextractor)
+[![Coverage Status](https://coveralls.io/repos/github/elsid/yextractor/badge.svg?branch=master)](https://coveralls.io/github/elsid/yextractor?branch=master)
+
 Header only library provides value extraction from key-value container
 (like std::map) with verification by extraction expression.
 
