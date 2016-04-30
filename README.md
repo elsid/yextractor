@@ -1,46 +1,79 @@
 # yextractor
 
-Библиотека для извлечения типизированного набора параметров из key-value
-коллекций с верификацией выражений и парсингом значений параметров.
+Header only library provides value extraction from key-value container
+(like std::map) with verification by extraction expression.
 
-## Источник данных
+## Build
 
-Можно использовать любую коллекцию, поддерживающую метод ```std::map::find```.
-Ключем и значениями должен быть тип ```std::string```,
-например ```std::map<std::string, std::string>```.
-
-## Именованные параметры
-
-Нужно определить типы параметров, используя макрос ```DEFINE_PARAMETER``` или
-```DEFINE_PARAMETER_WITH_PARSER``` для использования специализированного парсера.
-
-```c++
-DEFINE_PARAMETER(type_name, value_type, "key")
-DEFINE_PARAMETER_WITH_PARSER(type_name, value_type, "key", parser_type)
+CMake based. Required only for tests and examples:
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make -j $(nproc)
+ctest -V -j $(nproc)
+examples/example
 ```
 
-Подробнее см. [код](include/yamail/yextractor/parameter.hpp).
+## Install
 
-Пример:
+Use ```add_subdirectory``` in your CMake project or just copy ```include/``` directory.
 
+## Usage
+
+To use library perform following steps:
+* [Adopt container type](#values-source)
+* [Define values types](#extracting-values)
+* [Define expression type](#extraction-expressions)
+* [Create and use extractor](#values-extraction)
+* [Handle errors](#vefification-errors)
+
+Or just look at complete [example](#examples).
+
+### Values source
+
+Source collection must provides interface:
+```c++
+Iterator find(std::string) const;
+Iterator end() const;
+```
+
+Iterator type must provides interface:
+```c++
+std::pair<std::string, std::string> operator ->() const;
+```
+
+### Extracting values
+
+Client must define special value type called ```Parameter``` using one of macro:
+* ```DEFINE_PARAMETER(type_name, value_type, "key")``` -- defines parameter with default parser type;
+* ```DEFINE_PARAMETER_WITH_PARSER(type_name, value_type, "key", parser_type)``` -- defines parameter with custom parser type.
+
+Details see [here](include/yamail/yextractor/parameter.hpp).
+
+Example:
 ```c++
 DEFINE_PARAMETER(SomeParameter, std::string, "some")
 ```
 
-## Тип парсера
+#### Parser type
 
-Должен иметь интерфейс:
-
+Parsers for all arithmetic types and dummy parser to copy ```std::string``` defined in library.
+Custom parser type must be defined for all extra types.
+Parser converts value from ```std::string``` into target type.
+Must provides interface:
 ```c++
-struct Parser {
-    yamail::yextractor::Errors operator ()(T& dst, const std::string& src) const;
-};
+yamail::yextractor::Errors operator ()(value_type& dst, const std::string& src) const;
 ```
 
-```T``` - тип значения параметра
+```value_type``` -- target value type.
 
-Пример:
+Object of parser type construct for each value by default constructor.
+
+Example:
 ```c++
+using Errors = yamail::yextractor::Errors;
+
 struct ParamParser {
     Errors operator ()(std::string& dst, const std::string& src) const {
         if (!boost::starts_with(src, "prefix")) {
@@ -54,24 +87,26 @@ struct ParamParser {
 DEFINE_PARAMETER_WITH_PARSER(AnotherParameter, std::string, "another", ParamParser)
 ```
 
-Объект парсера создается для каждого значения параметра конструктором по-умолчанию.
+### Extraction expressions
 
-## Выражения для верификации
+Allow to verify values combination extracted from container.
 
-Позволяют выполнить верификацию комбинации параметров, извлеченной из коллекции.
+#### Expressions types
 
-### Типы выражений
+Following types ```Required```, ```Optional```, ```Any```, ```First```, ```Every``` are expressions.
+Arguments of all types must be expressions or type ```Parameter```, details see [below](#expressions-combinations).
+Verification of user type succeed if value found and parser returns no errors or if value not found and top type allows value absence.
 
-#### Required
+##### Required
 
 ```c++
-template Required <class Parameter>
+template <class Argument> Required
 ```
 
-Задает обязательный параметр. Верификация проходит, если значение параметра прошло верификацию.
+Defines required expression.
+Verification succeed if argument passed verification. Value absence is disallowed.
 
-Пример:
-
+Example:
 ```c++
 using GetSomeRequiredParameter = Required<SomeParameter>;
 ```
@@ -79,12 +114,13 @@ using GetSomeRequiredParameter = Required<SomeParameter>;
 #### Optional
 
 ```c++
-template Optional <class Parameter>
+template <class Argument> Optional
 ```
 
-Задает необязательный параметр. Верификация проходит, если значение параметра отсутствует или прошло верификацию.
+Defines optional expression.
+Verification succeed if argument succeed verification. Value absence is allowed.
 
-Пример:
+Example:
 ```c++
 using GetSomeOptionalParameter = Optional<SomeParameter>;
 ```
@@ -92,14 +128,15 @@ using GetSomeOptionalParameter = Optional<SomeParameter>;
 #### Any
 
 ```c++
-template Any <class ... Values>
+template <class ... Arguments> Any
 ```
 
-Задает набор выражений. Верификация проходит, если хотя бы одно значение прошло верификацию.
-Заполняются все прошедшие верификацию значения.
+Defines sequence of expressions.
+Verification succeed if one of arguments succeed verification.
+Value absence is disallowed.
+Fills all values successfully passed verification.
 
-Пример:
-
+Example:
 ```c++
 using GetAnyParameter = Any<SomeParameter, AnotherParameter>;
 ```
@@ -107,14 +144,15 @@ using GetAnyParameter = Any<SomeParameter, AnotherParameter>;
 #### First
 
 ```c++
-template First <class ... Values>
+template <class ... Arguments> First
 ```
 
-Задает набор выражений. Верификация проходит, если хотя бы одно значение прошло верификацию.
-Заполняется первое прошедшее верификацию значение.
+Defines sequence of expressions.
+Verification succeed if one of arguments succeed verification.
+Value absence is disallowed.
+Fills first value successfully passed verification.
 
-Пример:
-
+Example:
 ```c++
 using GetFirstParameter = First<SomeParameter, AnotherParameter>;
 ```
@@ -122,75 +160,81 @@ using GetFirstParameter = First<SomeParameter, AnotherParameter>;
 #### Every
 
 ```c++
-template Every <class ... Values>
+template <class ... Arguments> Every
 ```
 
-Задает набор выражений. Верификация проходит, если все значения прошли верификацию.
+Defines sequence of expressions.
+Verification succeed if all of arguments succeed verification.
+Value absence is disallowed.
+Fills all values successfully passed verification.
 
-Пример:
-
+Example:
 ```c++
 using GetEveryParameter = Every<SomeParameter, AnotherParameter>;
 ```
 
-### Сочетания типов выражений
+#### Expressions combinations
 
-```Required``` и ```Optional``` можно использовать только для параметров.
-```Any```, ```First``` и ```Every``` можно использовать в любых сочетаниях.
+```Required``` and ```Optional``` arguments must be only type of ```Parameter```
+```Any```, ```First```, and ```Every``` arguments must be any of types:
+```Parameter```, ```Required```, ```Optional```, ```Any```, ```First```, or ```Every```
 
-Примеры:
+Example:
 ```c++
 using Example1 = Any<Every<A, B>, Every<C, D>>;
 using Example2 = Every<Any<A, B>, Any<C, D>>;
 using Example3 = Every<A, B, Optional<C>>;
 ```
 
-## Извлечение значений
+### Values extraction
 
-Для этого нужно использовать объект класса ```Extractor```.
-Метод ```get``` возвращает ```std::tuple``` от всех параметров в выражении.
-Если в выражении параметры дублируются, в результате будет так же.
-Значения обернуты в ```detail::Value``` (аналог ```boost::optional```).
-Тип результата можно получить с помощью ```Expression<T>::Type```.
+Use object of type ```Extractor```.
+To get all values from expression use:
+```c++
+template <class T, class Source>
+std::tuple</* unspecified */> get(const Source& source);
+```
 
-Объекты классов именованных параметров можно создавать на основе результата с
-помощью конструкторов:
+So parameters has duplicates in expression so in the result.
+Values wrapped by ```detail::Value``` (like ```boost::optional```).
+Result type defines by ```Expression<T>::Type```.
+
+Initialize ```Parameter``` by copied value from ```std::tuple``` using constructor:
 ```c++
 template <class ... Values>
 Parameter(const std::tuple<Values ...>& values);
 ```
 
-Копирует значение из результата (см. [тест](tests/parameter.cpp#L25-L37)).
-
+or by moved value from ```std::tuple``:
 ```c++
 template <class ... Values>
 Parameter(std::tuple<Values ...>& values);
 ```
 
-Перемещает значение из результата. Повторное применение создаст
-неинициализированный параметр (см. [тест](tests/parameter.cpp#L39-L50)).
-
-Проверить, инициализирован ли параметр, можно с помощью метода:
+Following method checks is value initialized:
 ```c++
 bool Parameter::initialized() const;
 ```
 
-Значение параметра можно получить по константной ссылке (см. [тест](tests/parameter.cpp#L65-L69)):
+Get constant reference to value by using:
 ```c++
 const Parameter::Type& Parameter::get() const;
 ```
 
-Или по universal reference (см. [тест](tests/parameter.cpp#L71-L77)):
+To move value from parameter use then ```Parameter``` becomes uninitialized:
 ```c++
 Parameter::Type&& Parameter::take();
 ```
 
-## Ошибки верификации
+### Vefification errors
 
-Метод ```Extractor::errors``` возвращает объекта класса ошибок ```Errors```,
-в котором содержится стек сообщений об ошибках ветви выражения, приведшей к
-провалу верфикации всего выражения. Сообщения упорядочены сверху вниз.
+If verification fails all errors available by method:
+```c++
+const Errors& Extractor::errors() const;
+```
 
-# Примеры
+Result contains sequence of errors from branch leads to verification failure ordered from last to first error.
 
-См. [здесь](examples/main.cpp)
+### Examples
+
+See [here](examples/main.cpp).
