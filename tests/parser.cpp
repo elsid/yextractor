@@ -13,7 +13,8 @@ struct ParserTest : Test {};
 TEST(ParserTest, parse_string_should_succeed) {
     const Parser<std::string> parse;
     std::string result;
-    parse(result, "string");
+    const auto errors = parse(result, "string");
+    EXPECT_EQ(errors, Errors());
     EXPECT_EQ(result, "string");
 }
 
