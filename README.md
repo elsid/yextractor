@@ -229,7 +229,7 @@ To move value from parameter use then ```Parameter``` becomes uninitialized:
 Parameter::Type&& Parameter::take();
 ```
 
-### Vefification errors
+### Verification errors
 
 If verification fails all errors available by method:
 ```c++
