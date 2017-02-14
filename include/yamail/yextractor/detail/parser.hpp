@@ -26,7 +26,7 @@ struct Parser<bool, void> {
     Errors operator()(bool& dst, const std::string& src) const {
         std::istringstream stream(src);
         stream >> std::boolalpha >> dst;
-        return Errors();
+        return stream.fail() ? Errors("fail to parse bool value") : Errors();
     }
 };
 
@@ -35,7 +35,7 @@ struct Parser<T, typename std::enable_if<std::is_arithmetic<T>::value, void>::ty
     Errors operator()(T& dst, const std::string& src) const {
         std::istringstream stream(src);
         stream >> dst;
-        return Errors();
+        return stream.fail() ? Errors("fail to parse arithmetic value") : Errors();
     }
 };
 

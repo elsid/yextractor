@@ -19,12 +19,19 @@ TEST(ParserTest, parse_string_should_succeed) {
     EXPECT_EQ(result, "string");
 }
 
-TEST(ParserTest, parse_bool_should_succeed) {
+TEST(ParserTest, parse_valid_bool_should_succeed) {
     const Parser<bool> parse;
     bool result;
     const auto errors = parse(result, "true");
     EXPECT_EQ(errors, Errors());
     EXPECT_EQ(result, true);
+}
+
+TEST(ParserTest, parse_invalid_bool_should_fail) {
+    const Parser<bool> parse;
+    bool result;
+    const auto errors = parse(result, "invalid");
+    EXPECT_EQ(errors, Errors("fail to parse bool value"));
 }
 
 TEST(ParserTest, parse_char_should_succeed) {
@@ -35,12 +42,26 @@ TEST(ParserTest, parse_char_should_succeed) {
     EXPECT_EQ(result, 'a');
 }
 
-TEST(ParserTest, parse_int_should_succeed) {
+TEST(ParserTest, parse_valid_int_should_succeed) {
     const Parser<int> parse;
     int result;
     const auto errors = parse(result, "42");
     EXPECT_EQ(errors, Errors());
     EXPECT_EQ(result, 42);
+}
+
+TEST(ParserTest, parse_invalid_int_should_fail) {
+    const Parser<int> parse;
+    int result;
+    const auto errors = parse(result, "invalid");
+    EXPECT_EQ(errors, Errors("fail to parse arithmetic value"));
+}
+
+TEST(ParserTest, parse_out_of_range_int_should_fail) {
+    const Parser<int> parse;
+    int result;
+    const auto errors = parse(result, "2147483648");
+    EXPECT_EQ(errors, Errors("fail to parse arithmetic value"));
 }
 
 TEST(ParserTest, parse_double_should_succeed) {
