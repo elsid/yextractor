@@ -338,4 +338,17 @@ TEST(ExtractorTest, extract_every_of_first_of_one_param_should_succeed) {
     EXPECT_EQ(extractor.errors(), Errors());
 }
 
+TEST(ExtractorTest, extract_without_one_param_from_empty_source_should_succeed) {
+    Extractor extractor;
+    const auto real = extractor.get<Without<ParamA>>(Source());
+    EXPECT_EQ(extractor.errors(), Errors());
+}
+
+TEST(ExtractorTest, extract_without_one_param_from_source_with_it_should_return_errors) {
+    Extractor extractor;
+    const Source source({{"a", "42"}});
+    const auto real = extractor.get<Without<ParamA>>(source);
+    EXPECT_EQ(extractor.errors(), Errors("parameter 'a' is present but should not"));
+}
+
 } // namespace

@@ -106,7 +106,7 @@ Verification of user type succeed if value found and parser returns no errors or
 template <class Argument> Required
 ```
 
-Defines required expression.
+Defines required parameter.
 Verification succeed if argument passed verification. Value absence is disallowed.
 
 Example:
@@ -120,12 +120,26 @@ using GetSomeRequiredParameter = Required<SomeParameter>;
 template <class Argument> Optional
 ```
 
-Defines optional expression.
+Defines optional parameter.
 Verification succeed if argument succeed verification. Value absence is allowed.
 
 Example:
 ```c++
 using GetSomeOptionalParameter = Optional<SomeParameter>;
+```
+
+#### Without
+
+```c++
+template <class Argument> Without
+```
+
+Defines forbidden parameter.
+Verification succeed if argument is not present.
+
+Example:
+```c++
+using GetSomeWithoutParameter = Without<SomeParameter>;
 ```
 
 #### Any

@@ -8,6 +8,7 @@
 #include <yamail/yextractor/required.hpp>
 #include <yamail/yextractor/errors.hpp>
 #include <yamail/yextractor/first.hpp>
+#include <yamail/yextractor/without.hpp>
 #include <yamail/yextractor/detail/to_string.hpp>
 
 namespace yamail {
@@ -68,6 +69,16 @@ struct Fill {
     template <class T>
     Errors fill(Optional<T>& optional) const {
         return fill(optional.value, optional.name(), optional.parser, Errors());
+    }
+
+    template <class T>
+    Errors fill(Without<T>& without) const {
+        const auto it = source.find(without.name());
+        if (it == source.end()) {
+            return Errors();
+        } else {
+            return Errors("parameter '" + without.name() + "' is present but should not");
+        }
     }
 
     template <class T>

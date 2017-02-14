@@ -7,6 +7,7 @@
 #include <yamail/yextractor/optional.hpp>
 #include <yamail/yextractor/parameter.hpp>
 #include <yamail/yextractor/required.hpp>
+#include <yamail/yextractor/without.hpp>
 
 namespace yamail {
 namespace yextractor {
@@ -32,6 +33,11 @@ std::tuple<Parameter<Tag>> flatValue(Required<Parameter<Tag>>&& value) {
 
 template <class Tag>
 std::tuple<Parameter<Tag>> flatValue(Optional<Parameter<Tag>>&& value) {
+    return std::make_tuple(Parameter<Tag>(std::move(value)));
+}
+
+template <class Tag>
+std::tuple<Parameter<Tag>> flatValue(Without<Parameter<Tag>>&& value) {
     return std::make_tuple(Parameter<Tag>(std::move(value)));
 }
 
@@ -102,6 +108,11 @@ auto flat(Required<Value>&& value) -> decltype(flatValue(std::move(value))) {
 
 template <class Value>
 auto flat(Optional<Value>&& value) -> decltype(flatValue(std::move(value))) {
+    return flatValue(std::move(value));
+}
+
+template <class Value>
+auto flat(Without<Value>&& value) -> decltype(flatValue(std::move(value))) {
     return flatValue(std::move(value));
 }
 
