@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -pedantic -Werr
 find_package(Boost REQUIRED)
 
 include_directories(
-    ${Boost_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIR}
     ${PROJECT_SOURCE_DIR}/include)
 
 install(DIRECTORY include/ DESTINATION include COMPONENT development)
